@@ -26,6 +26,9 @@ serve(async (req) => {
       last_boot_time,
       ip_address,
       os_version,
+      latitude,
+      longitude,
+      location_accuracy,
     } = body;
 
     if (!machine_id) {
@@ -47,18 +50,28 @@ serve(async (req) => {
 
     if (existingPC) {
       // Update existing PC
+      const updateData: Record<string, unknown> = {
+        hostname,
+        cpu_info,
+        ram_info,
+        last_boot_time,
+        ip_address,
+        os_version,
+        last_seen: new Date().toISOString(),
+        status: existingPC.terms_accepted ? 'online' : 'pending_terms',
+      };
+
+      // Add location data if provided
+      if (latitude !== undefined && longitude !== undefined) {
+        updateData.latitude = latitude;
+        updateData.longitude = longitude;
+        updateData.location_accuracy = location_accuracy;
+        updateData.location_updated_at = new Date().toISOString();
+      }
+
       const { data, error } = await supabase
         .from('managed_pcs')
-        .update({
-          hostname,
-          cpu_info,
-          ram_info,
-          last_boot_time,
-          ip_address,
-          os_version,
-          last_seen: new Date().toISOString(),
-          status: existingPC.terms_accepted ? 'online' : 'pending_terms',
-        })
+        .update(updateData)
         .eq('id', existingPC.id)
         .select()
         .single();
@@ -68,18 +81,28 @@ serve(async (req) => {
       needsTerms = !existingPC.terms_accepted;
     } else {
       // Create new PC
+      const insertData: Record<string, unknown> = {
+        machine_id,
+        hostname,
+        cpu_info,
+        ram_info,
+        last_boot_time,
+        ip_address,
+        os_version,
+        status: 'pending_terms',
+      };
+
+      // Add location data if provided
+      if (latitude !== undefined && longitude !== undefined) {
+        insertData.latitude = latitude;
+        insertData.longitude = longitude;
+        insertData.location_accuracy = location_accuracy;
+        insertData.location_updated_at = new Date().toISOString();
+      }
+
       const { data, error } = await supabase
         .from('managed_pcs')
-        .insert({
-          machine_id,
-          hostname,
-          cpu_info,
-          ram_info,
-          last_boot_time,
-          ip_address,
-          os_version,
-          status: 'pending_terms',
-        })
+        .insert(insertData)
         .select()
         .single();
 
