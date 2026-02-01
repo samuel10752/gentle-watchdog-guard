@@ -15,6 +15,10 @@ export type ManagedPC = {
   terms_accepted_at: string | null;
   ip_address: string | null;
   os_version: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  location_accuracy: number | null;
+  location_updated_at: string | null;
   created_at: string;
   updated_at: string;
 };

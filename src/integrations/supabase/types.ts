@@ -55,6 +55,10 @@ export type Database = {
           ip_address: string | null
           last_boot_time: string | null
           last_seen: string | null
+          latitude: number | null
+          location_accuracy: number | null
+          location_updated_at: string | null
+          longitude: number | null
           machine_id: string
           os_version: string | null
           ram_info: string | null
@@ -71,6 +75,10 @@ export type Database = {
           ip_address?: string | null
           last_boot_time?: string | null
           last_seen?: string | null
+          latitude?: number | null
+          location_accuracy?: number | null
+          location_updated_at?: string | null
+          longitude?: number | null
           machine_id: string
           os_version?: string | null
           ram_info?: string | null
@@ -87,6 +95,10 @@ export type Database = {
           ip_address?: string | null
           last_boot_time?: string | null
           last_seen?: string | null
+          latitude?: number | null
+          location_accuracy?: number | null
+          location_updated_at?: string | null
+          longitude?: number | null
           machine_id?: string
           os_version?: string | null
           ram_info?: string | null
